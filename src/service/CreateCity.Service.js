@@ -1,18 +1,21 @@
 const { CitiesDB } = require('../database/database.config');
+const { v4: uuidv4 } = require('uuid');
 
 class CreateCityService {
 
   execute(name, state){
     const city = {
       name,
-      state
+      state,
+      _id: uuidv4()
     }
 
-    CitiesDB.insert(city, (error, newCity) => {
-      if(error) throw new Error("Something got wrong!");
-
-      return newCity;
-    })
+    return new Promise((resolve, reject) =>{
+      CitiesDB.insert(city, (error, newCity) => {
+        if(error) reject(error);
+        resolve(newCity);
+      });
+    });
   }
 }
 

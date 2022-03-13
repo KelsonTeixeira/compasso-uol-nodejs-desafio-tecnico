@@ -1,38 +1,42 @@
 citiesRoutes = require('express').Router();
 
-const cities = [];
+const CreateCityService = require('../service/CreateCity.Service');
+const FindCityService = require('../service/FindCity.Service');
 
-citiesRoutes.post('/', (request, response) => {
+const createCityService = new CreateCityService;
+const findCityService = new FindCityService;
+
+
+citiesRoutes.post('/', async (request, response) => {
   const { name, state } = request.body; 
 
-  cityObject = {
-    name,
-    state
-  }
+  const newCity = await createCityService.execute(name, state);
 
-  cities.push(cityObject);
-
-  return response.status(201).json(cityObject);
+  return response.status(201).json(newCity);
 });
 
-citiesRoutes.get('/:name', (request, response) => {
+citiesRoutes.get('/:name', async (request, response) => {
   const { name } = request.params;
 
-  const city = cities.find(city => city.name === name);
+  const cityList = await findCityService.findByName(name);
 
-  if(!city) return response.status(404).json({ error: 'City not found!'});
+  if(cityList.length === 0){
+    return response.status(404).json({ error: 'City not found!'});
+  } 
 
-  return response.status(200).json(city);
+  return response.status(200).json(cityList);
 });
 
-citiesRoutes.get('/state/:stateName', (request, response) => {
+citiesRoutes.get('/state/:stateName', async (request, response) => {
   const { stateName } = request.params;
 
-  const city = cities.find(city => city.state === stateName);
+  const cityList = await findCityService.findBySate(stateName);
 
-  if(!city) return response.status(404).json({ error: 'City not Found'});
+  if(cityList.length === 0) {
+    return response.status(404).json({ error: 'City not Found'});
+  }
 
-  return response.status(200).json(city);
+  return response.status(200).json(cityList);
 })
 
 module.exports = citiesRoutes;

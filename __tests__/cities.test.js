@@ -1,5 +1,6 @@
 const request = require('supertest');
 const app = require('../src/app');
+const { validate } = require('uuid');
 
 
 describe("Cities", () => {
@@ -15,6 +16,7 @@ describe("Cities", () => {
 
     expect(cityResponse.status).toBe(201);
     expect(cityResponse.body).toMatchObject(city);
+    expect(validate(cityResponse.body._id)).toBeTruthy();
     
   });
 
@@ -24,16 +26,16 @@ describe("Cities", () => {
       state: "Distrito Federal"
     }
 
-    await request(app)
+    const createCity = await request(app)
     .post('/cities')
     .send(city)
     .expect(201);
 
     const cityResponse = await request(app)
-    .get(`/cities/${city.name}`);
+    .get(`/cities/${createCity.body.name}`);
 
     expect(cityResponse.status).toBe(200);
-    expect(cityResponse.body).toMatchObject(city);
+    expect(cityResponse.body).toContainEqual(createCity.body);
   });
 
   it('should not be able to consult a non existing city', async () => {
@@ -59,16 +61,16 @@ describe("Cities", () => {
       state: "Distrito Federal"
     }
 
-    await request(app)
+    const createCity = await request(app)
     .post('/cities')
     .send(city)
     .expect(201);
 
     const stateResponse = await request(app)
-    .get(`/cities/state/${city.state}`);
+    .get(`/cities/state/${createCity.body.state}`);
 
     expect(stateResponse.status).toBe(200);
-    expect(stateResponse.body).toMatchObject(city);
+    expect(stateResponse.body).toContainEqual(createCity.body);
   });
 
   it('should not be able to consult a non existing city by state', async () => {

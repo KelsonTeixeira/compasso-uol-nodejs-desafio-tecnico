@@ -1,73 +1,55 @@
 const clientsRoutes = require('express').Router();
-const { v4: uuidv4 } = require('uuid');
-const { AgeFromDate } = require('age-calculator');
 
+const CreateClientService = require('../service/CreateClient.Service');
+const FindClientService = require('../service/FindClient.Service');
+const DeleteClientService = require('../service/DeleteClient.Service');
+const UpdateClientService = require('../service/UpdateClient.Service');
 
-const clients = [];
+const findClientByIDMiddleware = require('../service/Clients.Middleware');
 
-function findClientByID(request, response, next){
-  const { clientID } = request.params;
-
-  const client = clients.find(client => client.id === clientID);
-
-  if(!client) return response.status(404).json({ error: 'Client not found!'});
-
-  request.client = client;
-
-  next();
-}
-
-clientsRoutes.post('/', (request, response) => {
+const createClientService = new CreateClientService;
+const findClientService = new FindClientService;
+const deleteClientService = new DeleteClientService;
+const updateClientService = new UpdateClientService;
+ 
+clientsRoutes.post('/', async (request, response) => {
   const { name, sex, birth, city } = request.body;
+  
+  const newClient = await createClientService.execute(name, sex, birth, city);
 
-  clientBirth = new Date(birth);
+  return response.status(201).json(newClient);
+});
 
-  const clientAge = new AgeFromDate(clientBirth);
+clientsRoutes.get('/name/', async (request, response) => {
+  const { name } = request.headers;
 
-  const client = {
-    name, 
-    sex, 
-    birth: clientBirth, 
-    city,
-    id: uuidv4(),
-    age: clientAge._age
+  const clientList = await findClientService.findByName(name);
+
+  if(clientList.length === 0){
+    return response.status(404).json({ error: 'Client not found!'});
   }
 
-  clients.push(client);
+  return response.status(200).json(clientList);
+});
 
-  return response.status(201).json(client);
-})
-
-clientsRoutes.get('/:name', (request, response) => {
-  const { name } = request.params;
-
-  const client = clients.find(client => client.name === name);
-
-  if(!client) return response.status(404).json({ error: 'Client not found!'});
-
-  return response.status(200).json(client);
-})
-
-clientsRoutes.get('/id/:clientID', findClientByID, (request, response) => {
+clientsRoutes.get('/', findClientByIDMiddleware, (request, response) => {
   const { client } = request;
   return response.status(200).json(client);
 });
 
-clientsRoutes.delete('/id/:clientID', findClientByID, (request, response) => {
+clientsRoutes.delete('/', findClientByIDMiddleware, async (request, response) => {
   const { client } = request;
 
-  const clientIndex = clients.findIndex(item => item === client);
-
-  clients.splice(clientIndex, 1);
+  await deleteClientService.execute(client._id);
 
   return response.status(204).send();
 });
 
-clientsRoutes.patch('/id/:clientID', findClientByID, (request, response) => {
+clientsRoutes.patch('/', findClientByIDMiddleware, async (request, response) => {
   const { client } = request;
   const { name } = request.body;
 
-  client.name = name;
+  await updateClientService.execute(client._id, name);
 
   return response.status(200).send();
 })

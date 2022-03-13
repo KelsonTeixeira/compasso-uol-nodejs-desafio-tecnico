@@ -26,7 +26,7 @@ describe('Clients', () => {
       birth: clientBirth.toISOString(),
       age: clientAge._age
     });
-    expect(validate(clientResponse.body.id)).toBeTruthy();
+    expect(validate(clientResponse.body._id)).toBeTruthy();
   });
 
   it('should be able to consult a client by name', async () => {
@@ -37,15 +37,16 @@ describe('Clients', () => {
       city: 'Brasília'
     }
     const createClient = await request(app)
-    .post('/clients')
+    .post('/clients/')
     .send(client)
     .expect(201);
 
     const clientConsult = await request(app)
-    .get(`/clients/${createClient.body.name}`);
+    .get('/clients/name/')
+    .set('name', createClient.body.name);
 
     expect(clientConsult.status).toBe(200);
-    expect(clientConsult.body).toMatchObject(createClient.body);
+    expect(clientConsult.body).toContainEqual(createClient.body);
   });
 
   it('should not be able to consult a client by a non existing name', async () => {
@@ -61,7 +62,8 @@ describe('Clients', () => {
     .expect(201);
 
     const clientConsult = await request(app)
-    .get('/clients/non-existing-name');
+    .get('/clients/name/ ')
+    .set('name', 'non-existing-name');
 
     expect(clientConsult.body.error).toBeTruthy();
   });
@@ -79,7 +81,8 @@ describe('Clients', () => {
     .expect(201);
 
     const clientConsultById = await request(app)
-    .get(`/clients/id/${createClient.body.id}`);
+    .get('/clients/')
+    .set('id', createClient.body._id);
 
     expect(clientConsultById.status).toBe(200);
     expect(clientConsultById.body).toMatchObject(createClient.body);
@@ -98,7 +101,8 @@ describe('Clients', () => {
     .expect(201);
 
     const clientConsultById = await request(app)
-    .get('/clients/id/no-existing-id');
+    .get('/clients/')
+    .set('id', 'non-existing-id');
 
     expect(clientConsultById.body.error).toBeTruthy();
   });
@@ -116,11 +120,13 @@ describe('Clients', () => {
     .expect(201);
 
     await request(app)
-    .delete(`/clients/id/${createClient.body.id}`)
+    .delete('/clients/')
+    .set('id', createClient.body._id)
     .expect(204);
 
     const clientConsultById = await request(app)
-    .get(`/clients/id/${createClient.body.id}`);
+    .get('/clients/')
+    .set('id', createClient.body._id);
 
     expect(clientConsultById.body.error).toBeTruthy();
   });
@@ -138,7 +144,8 @@ describe('Clients', () => {
     .expect(201);
 
     const deletedClient = await request(app)
-    .delete('/clients/id/non-existing-id');
+    .delete('/clients/')
+    .set('id', 'non-existing-id');
 
     expect(deletedClient.body.error).toBeTruthy();
   });
@@ -159,12 +166,14 @@ describe('Clients', () => {
     const newName = 'Kely Caroline';
 
     await request(app)
-    .patch(`/clients/id/${createClient.body.id}`)
+    .patch('/clients/')
+    .set('id', createClient.body._id)
     .send({name: newName})
     .expect(200);
 
     const updatedClient = await request(app)
-    .get(`/clients/id/${createClient.body.id}`);
+    .get('/clients/')
+    .set('id', createClient.body._id);
 
     expect(updatedClient.body).toMatchObject({
       ...createClient.body,

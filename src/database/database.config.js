@@ -8,7 +8,7 @@ ClientsDB.loadDatabase();
 
 CitiesDB.loadDatabase();
 
-module.exports = {
-  ClientsDB,
-  CitiesDB
+module.exports = { 
+  ClientsDB, 
+  CitiesDB 
 }

@@ -1,8 +1,12 @@
+const FindClientService = require('./FindClient.Service');
 
-function findClientByID(request, response, next){
-  const { clientID } = request.params;
+const findClientService = new FindClientService;
 
-  const client = clients.find(client => client.id === clientID);
+
+async function findClientByIDMiddleware(request, response, next){
+  const { id } = request.headers;
+
+  const client = await findClientService.findById(id);
 
   if(!client) return response.status(404).json({ error: 'Client not found!'});
 
@@ -11,4 +15,4 @@ function findClientByID(request, response, next){
   next();
 }
 
-module.exports = findClientByID;
+module.exports = findClientByIDMiddleware;
