@@ -15,8 +15,8 @@ citiesRoutes.post('/', async (request, response) => {
   return response.status(201).json(newCity);
 });
 
-citiesRoutes.get('/:name', async (request, response) => {
-  const { name } = request.params;
+citiesRoutes.get('/name', async (request, response) => {
+  const { name } = request.query;
 
   const cityList = await findCityService.findByName(name);
 
@@ -27,10 +27,10 @@ citiesRoutes.get('/:name', async (request, response) => {
   return response.status(200).json(cityList);
 });
 
-citiesRoutes.get('/state/:stateName', async (request, response) => {
-  const { stateName } = request.params;
+citiesRoutes.get('/state/', async (request, response) => {
+  const { name } = request.query;
 
-  const cityList = await findCityService.findBySate(stateName);
+  const cityList = await findCityService.findBySate(name);
 
   if(cityList.length === 0) {
     return response.status(404).json({ error: 'City not Found'});

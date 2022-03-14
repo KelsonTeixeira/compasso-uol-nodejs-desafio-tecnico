@@ -32,7 +32,7 @@ describe("Cities", () => {
     .expect(201);
 
     const cityResponse = await request(app)
-    .get(`/cities/${createCity.body.name}`);
+    .get(`/cities/name/?name=${createCity.body.name}`);
 
     expect(cityResponse.status).toBe(200);
     expect(cityResponse.body).toContainEqual(createCity.body);
@@ -50,7 +50,7 @@ describe("Cities", () => {
     .expect(201);
 
     const cityResponse = await request(app)
-    .get('/cities/non-existing-city');
+    .get('/cities/name/?name=non-existing-city');
 
     expect(cityResponse.body.error).toBeTruthy();
   });
@@ -67,7 +67,7 @@ describe("Cities", () => {
     .expect(201);
 
     const stateResponse = await request(app)
-    .get(`/cities/state/${createCity.body.state}`);
+    .get(`/cities/state/?name=${createCity.body.state}`);
 
     expect(stateResponse.status).toBe(200);
     expect(stateResponse.body).toContainEqual(createCity.body);
@@ -85,7 +85,7 @@ describe("Cities", () => {
     .expect(201);
 
     const stateResponse = await request(app)
-    .get(`/cities/state/non-existing-state`);
+    .get(`/cities/state/?name=non-existing-state`);
 
     expect(stateResponse.body.error).toBeTruthy();
   });
