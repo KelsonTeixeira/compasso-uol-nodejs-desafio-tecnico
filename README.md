@@ -241,7 +241,7 @@ $ yarn start
 
   ### Se você instalou apenas as dependências de produção, execute o comendo:
     ```
-    $ git add jest -D
+    $ git add jest @faker-js/faker -D
     ```
   ### Para rodar o teste, execute o seguinte comando:
     ```

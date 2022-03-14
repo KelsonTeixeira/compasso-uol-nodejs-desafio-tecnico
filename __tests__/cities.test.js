@@ -2,13 +2,14 @@ const request = require('supertest');
 const app = require('../src/app');
 const { validate } = require('uuid');
 
+const GenerateFakeCities = require('./GenerateFakeCities');
+
+const generateFakeCities = new GenerateFakeCities;
+
 
 describe("Cities", () => {
   it('should be able to create a new city', async () => {
-    city = {
-      name: "Brasília",
-      state: "Distrito Federal"
-    }
+    city = generateFakeCities.execute();
 
     const cityResponse = await request(app)
     .post('/cities')
@@ -21,10 +22,7 @@ describe("Cities", () => {
   });
 
   it('should be able to consult a city by name', async () => {
-    city = {
-      name: "Brasília",
-      state: "Distrito Federal"
-    }
+    city = generateFakeCities.execute();
 
     const createCity = await request(app)
     .post('/cities')
@@ -39,10 +37,7 @@ describe("Cities", () => {
   });
 
   it('should not be able to consult a non existing city', async () => {
-    city = {
-      name: "Brasília",
-      state: "Distrito Federal"
-    }
+    city = generateFakeCities.execute();
 
     await request(app)
     .post('/cities')
@@ -56,10 +51,7 @@ describe("Cities", () => {
   });
 
   it('should be able to consult city by state', async () => {
-    city = {
-      name: "Brasília",
-      state: "Distrito Federal"
-    }
+    city = generateFakeCities.execute();
 
     const createCity = await request(app)
     .post('/cities')
@@ -74,10 +66,7 @@ describe("Cities", () => {
   });
 
   it('should not be able to consult a non existing city by state', async () => {
-    city = {
-      name: "Brasília",
-      state: "Distrito Federal"
-    }
+    city = generateFakeCities.execute();
 
     await request(app)
     .post('/cities')
