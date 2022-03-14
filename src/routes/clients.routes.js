@@ -21,7 +21,7 @@ clientsRoutes.post('/', async (request, response) => {
 });
 
 clientsRoutes.get('/name/', async (request, response) => {
-  const { name } = request.headers;
+  const { name } = request.query;
 
   const clientList = await findClientService.findByName(name);
 

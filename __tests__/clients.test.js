@@ -42,8 +42,7 @@ describe('Clients', () => {
     .expect(201);
 
     const clientConsult = await request(app)
-    .get('/clients/name/')
-    .set('name', createClient.body.name);
+    .get(`/clients/name/?name=${createClient.body.name}`);
 
     expect(clientConsult.status).toBe(200);
     expect(clientConsult.body).toContainEqual(createClient.body);
@@ -62,8 +61,7 @@ describe('Clients', () => {
     .expect(201);
 
     const clientConsult = await request(app)
-    .get('/clients/name/ ')
-    .set('name', 'non-existing-name');
+    .get(`/clients/name/?name=non-exixting-name`);
 
     expect(clientConsult.body.error).toBeTruthy();
   });
