@@ -15,11 +15,11 @@ Já o uso do **JestJS** se deu pela escolha de escrever um código utilazando TD
  $ git clone https://github.com/KelsonTeixeira/compasso-uol-nodejs-desafio-tecnico.git
 ```
 
-* Dentro do repositório dentro em seu computador, rode o seguinte comando para intalar as dependências:
+* Dentro do repositório dentro em seu computador, execute o seguinte comando para intalar as dependências:
 ```
  $ yarn
 ```
-* Para iniciar o servidor, rode o camando:
+* Para iniciar o servidor, execute o camando:
 ```
 $ yarn start
 ```
@@ -105,7 +105,7 @@ $ yarn start
 #
 ## Clients
 
-## Adicionar novo Cliente
+### Adicionar novo Cliente
 
 * POST '/clients', os corpo da requisição deve seguir esse padrão: 
   ```
@@ -209,7 +209,7 @@ $ yarn start
   }
   ```
 
-## Atualizar nome do Cliente
+### Atualizar nome do Cliente
 
 * PATCH '/clients'
 * Passar pelo header da requisição o id:
@@ -236,3 +236,14 @@ $ yarn start
     "error": "Client not found!"
   }
   ```
+
+  # Realizar Testes utilizando o Jest
+
+  ### Se você instalou apenas as dependências de produção, execute o comendo:
+    ```
+    $ git add jest -D
+    ```
+  ### Para rodar o teste, execute o seguinte comando:
+    ```
+    $ yarn test
+    ```
